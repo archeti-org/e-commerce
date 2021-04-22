@@ -1,12 +1,34 @@
-odoo.define("website_sale_secondary_unit.animation", function(require) {
+odoo.define("website_sale_secondary_unit.animation", function (require) {
     "use strict";
 
     const sAnimation = require("website.content.snippets.animation");
+    var publicWidget = require("web.public.widget");
+    require("website_sale.website_sale");
+
+    publicWidget.registry.WebsiteSale.include({
+        _submitForm: function () {
+            if (
+                this.$form.find('input[name="add_secondary_qty"]').val() !== undefined
+            ) {
+                this.rootProduct.add_secondary_qty = parseFloat(
+                    this.$form.find('input[name="add_secondary_qty"]').val()
+                );
+            }
+            if (
+                this.$form.find('select[name="secondary_uom_id"]').val() !== undefined
+            ) {
+                this.rootProduct.secondary_uom_id = parseFloat(
+                    this.$form.find('select[name="secondary_uom_id"]').val()
+                );
+            }
+            return this._super();
+        },
+    });
 
     sAnimation.registry.sale_secondary_unit = sAnimation.Class.extend({
         selector: ".secondary-unit",
         // eslint-disable-next-line no-unused-vars
-        init: function(parent, editableMode) {
+        init: function (parent, editableMode) {
             this._super.apply(this, arguments);
             this.$secondary_uom = null;
             this.$secondary_uom_qty = null;
@@ -16,7 +38,7 @@ odoo.define("website_sale_secondary_unit.animation", function(require) {
             this.product_uom_factor = null;
             this.product_qty = null;
         },
-        start: function() {
+        start: function () {
             this.$secondary_uom = $("#secondary_uom");
             this.$secondary_uom_qty = $(".secondary-quantity");
             this.$product_qty = $(".quantity");
@@ -36,7 +58,7 @@ odoo.define("website_sale_secondary_unit.animation", function(require) {
                 this._onChangeSecondaryUom();
             }
         },
-        _setValues: function() {
+        _setValues: function () {
             this.secondary_uom_qty = Number(
                 this.$target.find(".secondary-quantity").val()
             );
@@ -49,12 +71,12 @@ odoo.define("website_sale_secondary_unit.animation", function(require) {
             this.product_qty = Number($(".quantity").val());
         },
 
-        _onChangeSecondaryUom: function() {
+        _onChangeSecondaryUom: function () {
             this._setValues();
             const factor = this.secondary_uom_factor * this.product_uom_factor;
             this.$product_qty.val(this.secondary_uom_qty * factor);
         },
-        _onChangeProductQty: function() {
+        _onChangeProductQty: function () {
             this._setValues();
             const factor = this.secondary_uom_factor * this.product_uom_factor;
             this.$secondary_uom_qty.val(this.product_qty / factor);
@@ -64,7 +86,7 @@ odoo.define("website_sale_secondary_unit.animation", function(require) {
     sAnimation.registry.sale_secondary_unit_cart = sAnimation.Class.extend({
         selector: ".oe_cart",
         // eslint-disable-next-line no-unused-vars
-        init: function(parent, editableMode) {
+        init: function (parent, editableMode) {
             this._super.apply(this, arguments);
             this.$product_qty = null;
             this.secondary_uom_qty = null;
@@ -72,17 +94,17 @@ odoo.define("website_sale_secondary_unit.animation", function(require) {
             this.product_uom_factor = null;
             this.product_qty = null;
         },
-        start: function() {
+        start: function () {
             var _this = this;
             this.$target.on(
                 "change",
                 "input.js_secondary_quantity[data-line-id]",
-                function() {
+                function () {
                     _this._onChangeSecondaryUom(this);
                 }
             );
         },
-        _setValues: function(order_line) {
+        _setValues: function (order_line) {
             this.$product_qty = this.$target.find(
                 ".quantity[data-line-id=" + order_line.dataset.lineId + "]"
             );
@@ -90,7 +112,7 @@ odoo.define("website_sale_secondary_unit.animation", function(require) {
             this.secondary_uom_factor = Number(order_line.dataset.secondaryUomFactor);
             this.product_uom_factor = Number(order_line.dataset.productUomFactor);
         },
-        _onChangeSecondaryUom: function(order_line) {
+        _onChangeSecondaryUom: function (order_line) {
             this._setValues(order_line);
             const factor = this.secondary_uom_factor * this.product_uom_factor;
             this.$product_qty.val(this.secondary_uom_qty * factor);

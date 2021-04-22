@@ -1,1 +1,2 @@
 # See https://github.com/OCA/odoo-community.org/blob/master/website/Contribution/CONTRIBUTING.rst#oca_dependencies-txt
+sale-workflow https://github.com/archeti-org/sale-workflow 14.0-mig-sale_order_secondary_unit

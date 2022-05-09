@@ -20,10 +20,16 @@ class WebsiteSaleSecondaryUnit(WebsiteSale):
 
     @http.route()
     def cart_update_json(
-        self, product_id, line_id=None, add_qty=None, set_qty=None, display=True
+        self, product_id, line_id=None, add_qty=None, set_qty=None, display=True, **kw
     ):
         so_line = request.env["sale.order.line"].browse(line_id)
         request.session.pop("secondary_uom_id", None)
+        if not so_line:
+            if "secondary_uom_id" in kw:
+                secondary_uom = request.env["product.secondary.unit"].browse(
+                    int(kw["secondary_uom_id"])
+                )
+                request.session["secondary_uom_id"] = secondary_uom.id
         if so_line.sudo().secondary_uom_id:
             request.session["secondary_uom_id"] = so_line.sudo().secondary_uom_id.id
         return super().cart_update_json(
@@ -32,4 +38,5 @@ class WebsiteSaleSecondaryUnit(WebsiteSale):
             add_qty=add_qty,
             set_qty=set_qty,
             display=display,
+            **kw
         )

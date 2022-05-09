@@ -26,8 +26,8 @@ class SaleOrder(models.Model):
             )
         return so_lines
 
-    def _website_product_id_change(self, order_id, product_id, qty=0):
-        res = super()._website_product_id_change(order_id, product_id, qty=qty)
+    def _website_product_id_change(self, order_id, product_id, qty=0, **kwargs):
+        res = super()._website_product_id_change(order_id, product_id, qty=qty, **kwargs)
         secondary_uom_id = self.env.context.get("secondary_uom_id", False)
         res["secondary_uom_id"] = secondary_uom_id
         return res
@@ -38,7 +38,6 @@ class SaleOrder(models.Model):
         line_id=None,
         add_qty=0,
         set_qty=0,
-        attributes=None,
         **kwargs
     ):
         if line_id:
@@ -69,7 +68,6 @@ class SaleOrder(models.Model):
             line_id=line_id,
             add_qty=add_qty,
             set_qty=set_qty,
-            attributes=attributes,
             **kwargs
         )
 

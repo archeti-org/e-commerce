@@ -4,14 +4,11 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="website.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <xpath
-                expr="//setting[@id='social_default_image_setting']"
-                position="after"
-            >
+            <xpath expr="//block[@id='website_shop_checkout']" position="inside">
                 <setting id="sale_checkout_skip_message">
                     <label
-                        for="website_sale_checkout_skip_message"
                         string="Sale Checkout Skip Message"
+                        for="website_sale_checkout_skip_message"
                     />
                     <span
                         class="fa fa-lg fa-globe"

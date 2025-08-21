@@ -103,7 +103,7 @@
         customize_show="True"
     >
         <xpath
-            expr="//div[hasclass('js_product')]//t[@t-placeholder='select']"
+            expr="//div[hasclass('js_product')]/t[@t-placeholder='select']"
             position="attributes"
         >
             <attribute name="t-if">product.product_add_mode != 'matrix'</attribute>
